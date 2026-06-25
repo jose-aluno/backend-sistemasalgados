@@ -30,16 +30,13 @@ public class EstornarPedidoCommand implements Command {
 
     @Override
     public void execute() {
-        // 1. Marca pedido como estornado
         pedido.setStatus(StatusPedido.ESTORNADO);
         pedidoRepository.save(pedido);
 
-        // 2. Devolve ao estoque
         var sabor = pedido.getSabor();
         sabor.setQuantidadeEstoque(sabor.getQuantidadeEstoque() + pedido.getQuantidade());
         saborRepository.save(sabor);
 
-        // 3. Gera movimento de estorno
         Movimento movimento = Movimento.builder()
                 .pedido(pedido)
                 .tipo(TipoMovimento.ESTORNO)
